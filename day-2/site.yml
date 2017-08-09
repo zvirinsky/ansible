@@ -1,0 +1,35 @@
+- name: Installation
+  hosts: pets
+  become: true
+  become_method: sudo
+
+  roles:
+  - role: tomcat
+  - role: nginx
+##########################
+
+- name: Verification
+  hosts: pets
+  become: true
+  become_method: sudo
+
+  roles:
+  - role: java_test
+  - role: nginx_test
+  - role: tomcat_test
+
+#########################
+
+- name: Check from localhost
+  hosts: localhost
+
+  tasks:
+    - name: check if it possible to connet to tomcat (GET)
+      uri:
+        url: http://localhost:8080
+
+    - action: uri url=http://localhost:8080 return_content=yes
+      register: webpage
+
+    - fail: msg="It's not tomcat!"
+      when: "'Tomcat' not in webpage.content"

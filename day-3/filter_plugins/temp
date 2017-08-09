@@ -1,0 +1,5 @@
+ansible pet -i inventory -m setup -a 'filter=ansible_hostname'
+
+ansible localhost -m setup -a 'filter=ansible_os_family'
+ansible localhost -m setup -a 'filter=ansible_distribution'
+ansible_distribution_major_version

@@ -1,0 +1,22 @@
+- name: get link for mongodb
+  hosts: localhost
+  connection: local
+
+  vars:
+    os_fam: "{{ ansible_os_family }}"
+    os_distr: "{{ ansible_distribution_major_version }}"
+    mongo_ver: "3.4"
+    mongo_src:
+      - http://downloads.mongodb.org/linux/mongodb-linux-x86_64-rhel62-3.4.1.tgz?_ga=2.199605801.607463346.1501744015-1811212876.1501744015
+      - http://downloads.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.4.1.tgz?_ga=2.199605801.607463346.1501744015-1811212876.1501744015
+      - http://downloads.mongodb.org/linux/mongodb-linux-x86_64-rhel55-3.2.11.tgz?_ga=2.200896809.607463346.1501744015-1811212876.1501744015
+      - http://downloads.mongodb.org/linux/mongodb-linux-x86_64-debian81-3.4.7-rc0.tgz?_ga=2.91077021.607463346.1501744015-1811212876.1501744015
+      - http://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-3.2.16-rc0.tgz?_ga=2.155628988.607463346.1501744015-1811212876.1501744015
+      - http://downloads.mongodb.org/linux/mongodb-linux-x86_64-rhel55-3.0.14.tgz?_ga=2.195608107.607463346.1501744015-1811212876.1501744015
+      - http://downloads.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.5.10.tgz?_ga=2.155628988.607463346.1501744015-1811212876.1501744015
+      - http://downloads.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.0.14.tgz?_ga=2.157782333.607463346.1501744015-1811212876.1501744015
+      - http://downloads.mongodb.org/linux/mongodb-linux-x86_64-ubuntu1604-3.4.7-rc0.tgz?_ga=2.157782333.607463346.1501744015-1811212876.1501744015
+
+  tasks:
+
+    - debug: msg=" download link {{ mongo_src | get_mongo_src(os_fam,os_distr,mongo_ver)}}"

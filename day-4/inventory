@@ -1,0 +1,7 @@
+[pets]
+pet ansible_ssh_host=192.168.56.11
+
+[pets:vars]
+ansible_ssh_port=22
+ansible_ssh_user = vagrant
+ansible_ssh_private_key_file = .vagrant/machines/default/virtualbox/private_key

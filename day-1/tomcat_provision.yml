@@ -1,0 +1,121 @@
+- name: Tomcat provisioning
+  hosts: pet
+  sudo: True
+
+  vars:
+    tomcat_version: 8
+    tomcat_subversion: 5.9
+    java_version: 8
+
+
+  tasks:
+
+    - name: Check for tomcat_as_group, create if doesn't exist
+      group:
+        name: tomcat_as_group
+        state: present
+
+    - name: Create user tomcat_as
+      user:
+        name: tomcat_as
+        group: tomcat_as_group
+        state: present
+        createhome: no
+
+    - name: Download tomcat sources
+      get_url:
+        url: http://archive.apache.org/dist/tomcat/tomcat-{{ tomcat_version }}/v{{ tomcat_version }}.{{ tomcat_subversion }}/bin/apache-tomcat-{{ tomcat_version }}.{{ tomcat_subversion }}.tar.gz
+        dest: /tmp/apache-tomcat-{{ tomcat_version }}.{{ tomcat_subversion }}.tar.gz
+        mode: 0744
+
+    - name: create directory for tomcat
+      file:
+        path: /opt/tomcat/{{ tomcat_version }}.{{ tomcat_subversion }}
+        state: directory
+
+    - name: Copy tomcat archive to  to catalina_home
+      copy:
+        src: /tmp/apache-tomcat-{{ tomcat_version }}.{{ tomcat_subversion }}.tar.gz
+        dest: /opt/tomcat/
+        remote_src: yes
+
+    - name: Unarchive tomcat's sources
+      unarchive:
+        src: /opt/tomcat/apache-tomcat-{{ tomcat_version }}.{{ tomcat_subversion }}.tar.gz
+        dest: /opt/tomcat/
+        remote_src: yes
+
+    - name: Copy tomcat's files to apropriate directory
+      shell:
+        cp -r -n /opt/tomcat/apache-tomcat-{{ tomcat_version }}.{{ tomcat_subversion }}/* /opt/tomcat/{{ tomcat_version }}.{{ tomcat_subversion }} && rm -rf /opt/tomcat/apache-tomcat-{{ tomcat_version }}.{{ tomcat_subversion }}
+
+    - name: Change permissions
+      file:
+        path: /opt/tomcat
+        state: directory
+        recurse: yes
+        owner: tomcat_as
+        group: tomcat_as_group
+        mode: 0744
+
+    - name: Remove source tar.gz from /tmp
+      file:
+        path: /tmp/apache-tomcat-{{ tomcat_version }}.{{ tomcat_subversion }}.tar.gz
+        state: absent
+
+    - name: Remove source tar.gz from /opt
+      file:
+        path: /opt/tomcat/apache-tomcat-{{ tomcat_version }}.{{ tomcat_subversion }}.tar.gz
+        state: absent
+
+    - name: Install java
+      yum:
+        name: java-1.{{ java_version }}.0-openjdk-devel
+        state: installed
+
+    - name: Copy initial tomcat.service
+      copy:
+        src: ./tomcat.service
+        dest: /etc/systemd/system
+        owner: tomcat_as
+        group: tomcat_as_group
+        mode: 744
+
+    - name: Replace paths in .service file
+      replace:
+        path: /etc/systemd/system/tomcat.service
+        regexp: 'opt/tomcat'
+        replace: 'opt/tomcat/{{ tomcat_version }}.{{ tomcat_subversion }}'
+        backup: yes
+
+    - name: enable and start tomcat if necessary
+      service:
+        name: tomcat
+        state: started
+        enabled: yes
+
+##### ckecks #####
+
+    - name: check with curl
+      shell: curl -IL localhost:8081
+      register: srv_curl
+    - debug: var=srv-curl
+
+    - name: check service
+      shell: systemctl status tomcat | grep active
+      register: srv_status
+    - debug: var=srv_status
+
+    - name: check with ps
+      shell: ps -ef | grep tomcat
+      register: srv_ps
+    - debug: var=srv_ps
+
+    - name: check with wget
+      shell: wget http://localhost:8081
+      register: srv_wget
+    - debug: var=srv_wget
+
+    - name: check if it possible to connet to tomcat (GET)
+      uri:
+        url: http://localhost:8080

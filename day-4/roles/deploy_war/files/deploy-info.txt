@@ -1,0 +1,4 @@
+deployed at:
+{{ script_out.date }}
+deployed by:
+{{ script_out.username }}

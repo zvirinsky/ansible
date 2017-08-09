@@ -1,0 +1,34 @@
+- name: Installation
+  hosts: pets
+  become: true
+  become_method: sudo
+
+  roles:
+  - role: tomcat
+  - role: nginx
+
+  tasks:
+  - set_fact:
+      tomcat_home: "{{ tomcat_home }}"
+
+##########################
+#
+#- name: Verification
+#  hosts: pets
+#  become: true
+#  become_method: sudo
+#  tasks:
+#
+#  roles:
+#  - role: java_test
+#  - role: nginx_test
+#  - role: tomcat_test
+
+##########################
+- name: Deploying
+  hosts: pets
+  become: true
+  become_method: sudo
+
+  roles:
+  - role: deploy_war

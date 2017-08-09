@@ -1,0 +1,54 @@
+---
+- name: Check for tomcat_as_group, create if doesn't exist
+  group:
+    name: tomcat_as_group
+    state: present
+
+- name: Create user tomcat_as
+  user:
+    name: tomcat_as
+    group: tomcat_as_group
+    state: present
+    createhome: no
+
+- name: Download tomcat sources
+  unarchive:
+    src: http://archive.apache.org/dist/tomcat/tomcat-{{ tomcat_version }}/v{{ tomcat_full_version }}/bin/apache-tomcat-{{ tomcat_full_version }}.tar.gz
+    dest: /tmp
+    remote_src: True
+    creates: /tmp/apache-tomcat-{{ tomcat_full_version }}
+
+- name: create directory for tomcat
+  file:
+    path: "{{ tomcat_home }}"
+    state: directory
+
+- name: copy tomcat files to catalina home
+  shell:
+    cp -r -n /tmp/apache-tomcat-{{ tomcat_full_version }}/* /opt/tomcat/{{ tomcat_full_version }}
+  args:
+    creates: /opt/tomcat/{{ tomcat_full_version }}/bin
+
+- name: Change permissions
+  file:
+    path: /opt/tomcat
+    state: directory
+    recurse: yes
+    owner: tomcat_as
+    group: tomcat_as_group
+    mode: 0744
+
+- name: replace tomcat.service with aproriate
+  template:
+    src: ./tomcat.service
+    dest: /etc/systemd/system
+    owner: tomcat_as
+    group: tomcat_as_group
+    mode: 0744
+  notify: restart tomcat
+
+- name: enable and start tomcat service if necessary
+  systemd:
+    name: tomcat
+    state: started
+    enabled: yes

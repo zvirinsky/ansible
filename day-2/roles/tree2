@@ -1,0 +1,99 @@
+[38;5;27m.[00m
+|-- [38;5;27mjava[00m
+|   |-- [38;5;27mdefaults[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mhandlers[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mmeta[00m
+|   |   `-- main.yml
+|   |-- README.md
+|   |-- [38;5;27mtasks[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mtests[00m
+|   |   |-- inventory
+|   |   `-- test.yml
+|   `-- [38;5;27mvars[00m
+|       `-- main.yml
+|-- [38;5;27mjava_test[00m
+|   |-- [38;5;27mdefaults[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mhandlers[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mmeta[00m
+|   |   `-- main.yml
+|   |-- README.md
+|   |-- [38;5;27mtasks[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mtests[00m
+|   |   |-- inventory
+|   |   `-- test.yml
+|   `-- [38;5;27mvars[00m
+|       `-- main.yml
+|-- [38;5;27mnginx[00m
+|   |-- [38;5;27mdefaults[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mhandlers[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mmeta[00m
+|   |   `-- main.yml
+|   |-- README.md
+|   |-- [38;5;27mtasks[00m
+|   |   |-- main.yml
+|   |   |-- nginx.conf.j2
+|   |   |-- nginx.conf.j2_bak
+|   |   |-- nginx.crt
+|   |   `-- nginx.key
+|   |-- [38;5;27mtests[00m
+|   |   |-- inventory
+|   |   `-- test.yml
+|   `-- [38;5;27mvars[00m
+|       `-- main.yml
+|-- [38;5;27mnginx_test[00m
+|   |-- [38;5;27mdefaults[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mhandlers[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mmeta[00m
+|   |   `-- main.yml
+|   |-- README.md
+|   |-- [38;5;27mtasks[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mtests[00m
+|   |   |-- inventory
+|   |   `-- test.yml
+|   `-- [38;5;27mvars[00m
+|       `-- main.yml
+|-- [38;5;27mtomcat[00m
+|   |-- [38;5;27mdefaults[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mhandlers[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mmeta[00m
+|   |   `-- main.yml
+|   |-- README.md
+|   |-- [38;5;27mtasks[00m
+|   |   |-- main.yml
+|   |   `-- tomcat.service
+|   |-- [38;5;27mtests[00m
+|   |   |-- inventory
+|   |   `-- test.yml
+|   `-- [38;5;27mvars[00m
+|       `-- main.yml
+|-- [38;5;27mtomcat_test[00m
+|   |-- [38;5;27mdefaults[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mhandlers[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mmeta[00m
+|   |   `-- main.yml
+|   |-- README.md
+|   |-- [38;5;27mtasks[00m
+|   |   `-- main.yml
+|   |-- [38;5;27mtests[00m
+|   |   |-- inventory
+|   |   `-- test.yml
+|   `-- [38;5;27mvars[00m
+|       `-- main.yml
+`-- tree2
+
+42 directories, 54 files

@@ -1,0 +1,6 @@
+1501772526,default,metadata,provider,virtualbox
+1501772526,default,provider-name,virtualbox
+1501772526,default,state,poweroff
+1501772526,default,state-human-short,poweroff
+1501772526,default,state-human-long,The VM is powered off. To restart the VM%!(VAGRANT_COMMA) simply run `vagrant up`
+1501772526,,ui,info,Current machine states:\n\ndefault                   poweroff (virtualbox)\n\nThe VM is powered off. To restart the VM%!(VAGRANT_COMMA) simply run `vagrant up`

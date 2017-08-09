@@ -1,0 +1,32 @@
+---
+- name: Check tomcat state
+  systemd:
+    name: tomcat
+  register: tomcat_state
+
+- debug: var=tomcat_state.status.ActiveState
+
+- name: Check if nginx redirects, tomcat page returns 200
+  uri:
+    url: http://{{ansible_enp0s8.ipv4.address}}
+    return_content: yes
+  register: webpage
+
+- name: Check if it is actually tomcat's page
+  fail:
+  when: "'Tomcat' not in webpage.content"
+
+- name: Check tomcat process
+  shell:
+    ps -ef | grep tomcat
+  register: tomcat_process
+
+- debug: var=tomcat_process
+
+- name: Assert tomcat service status
+  shell: systemctl status tomcat
+  register: t_cmd_result
+
+- assert:
+     that:
+       - "'dead' not in t_cmd_result.stderr"
