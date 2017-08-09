@@ -1,0 +1,19 @@
+- name: build new host
+  hosts: localhost
+
+  tasks:
+  - name: execute script
+    pro_vagr:
+      path: /home/student/cm/ansible/mntlab-exam/Vagrantfile
+      state: started
+    register: output
+
+  - add_host:
+      name: pet
+      groups: just_created
+      ansible_host: "{{output.ipaddress}}"
+      ansible_port: "{{output.port}}"
+      ansible_user: "{{output.user}}"
+      ansible_ssh_private_key_file: "{{output.ssh_path}}"
+      insecure_private_key: yes
+    when: output.state ==  "running"

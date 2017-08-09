@@ -1,0 +1,15 @@
+- include: createvm.yml
+
+- name: Provision vm
+  hosts: pet
+  become: true
+  become_method: sudo
+
+  roles:
+    - role: tomcat
+    - role: nginx
+
+  tasks:
+    - name: vars
+      set_fact:
+        tomcat_home: "{{ tomcat_home }}"

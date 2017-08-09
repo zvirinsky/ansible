@@ -1,0 +1,7 @@
+---
+- name: Check java version
+  shell:
+    java -version
+  register: java_info
+
+- debug: var=java_info.stderr_lines

@@ -1,0 +1,51 @@
+---
+- name: replace tomcat-users.xml with aproriate one
+  template:
+    src: ../files/tomcat-users.xml
+    dest: '{{ tomcat_home }}/conf/'
+    owner: tomcat_as
+    group: tomcat_as_group
+    mode: 0744
+  notify: restart tomcat
+
+
+- name: replace context.xml with aproriate one
+  template:
+    src: ../files/context.xml
+    dest: '{{ tomcat_home }}/webapps/manager/META-INF/'
+    owner: tomcat_as
+    group: tomcat_as_group
+    mode: 0744
+  notify: restart tomcat
+
+- name: force handlers
+  meta: flush_handlers
+
+- pause:
+    minutes: 1
+    prompt: "wait for tomcat starts"
+
+- name: execute deploy script
+  deploy:
+    url: "{{ url }}"
+    war: "{{ war }}"
+    username: "{{ username }}"
+    password: "{{ password }}"
+  delegate_to: localhost
+  register: script_out
+- name: create directory for deploy-info.txt
+  file:
+    path: /var/lib/tomcat/webapps
+    state: directory
+    recurse: yes
+    owner: tomcat_as
+    group: tomcat_as_group
+    mode: 0744
+
+- name: copy deploy-info.txt to remote host
+  template:
+    src: ../files/deploy-info.txt
+    dest: /var/lib/tomcat/webapps/
+    owner: tomcat_as
+    group: tomcat_as_group
+    mode: 0744

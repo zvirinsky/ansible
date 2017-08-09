@@ -1,0 +1,6 @@
+---
+username: admin
+password: admin
+url: http://192.168.56.10:8080
+tomcat_version: 8
+tomcat_subversion: 5.9

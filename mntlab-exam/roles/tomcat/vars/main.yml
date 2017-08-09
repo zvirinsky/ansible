@@ -1,0 +1,3 @@
+---
+tomcat_full_version: "{{ tomcat_version }}.{{ tomcat_subversion }}"
+tomcat_home: /opt/tomcat/{{ tomcat_full_version }}

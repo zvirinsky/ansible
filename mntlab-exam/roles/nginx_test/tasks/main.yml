@@ -1,0 +1,22 @@
+---
+- name: Check NGINX state
+  systemd:
+    name: nginx
+  register: nginx_state
+
+- debug: var=nginx_state.status.ActiveState
+
+- name: Check NGINX process
+  shell:
+    ps -ef | grep nginx
+  register: nginx_process
+
+- debug: var=nginx_process
+
+- name: Assert nginx service status
+  shell: systemctl status nginx
+  register: n_cmd_result
+
+- assert:
+    that:
+      - "'dead' not in n_cmd_result.stderr"

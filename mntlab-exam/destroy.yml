@@ -1,0 +1,11 @@
+- name: build new host
+  hosts: localhost
+  become: true
+  become_method: sudo
+
+  tasks:
+  - name: execute script
+    pro_vagr:
+      path: /home/student/cm/ansible/mntlab-exam/Vagrantfile
+      state: destroyed
+    register: output

@@ -1,0 +1,15 @@
+- include: provisionvm.yml
+
+- name: Deploying
+  hosts: pets
+  become: true
+  become_method: sudo
+
+
+  pre_tasks:
+    - name: Jenkins job name
+      command: echo "{{ lookup('env','JOB_NAME') }}"
+      register: job_name
+
+  roles:
+  - role: deploy_war

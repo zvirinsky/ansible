@@ -1,0 +1,16 @@
+- name: app test
+  hosts: pet
+  become: true
+  become_method: sudo
+
+  tasks:
+    - name: Check application
+      uri:
+        url: "http://{{ ansible_enp0s8.ipv4.address }}:8080/{{ war }}"
+        assert:
+      register: webpage
+      delegate_to: localhost
+
+    - assert:
+        that:
+          - "{{ webpage.status }} == 200"

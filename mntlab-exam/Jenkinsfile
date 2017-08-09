@@ -1,0 +1,89 @@
+node("${env.SLAVE}") {
+
+  stage("Cat"){
+
+
+    sh 'cat /home/student/cm/ansible/mntlab-exam/createvm.yml'
+    sh 'cat /home/student/cm/ansible/mntlab-exam/provisionvm.yml'
+    sh 'cat /home/student/cm/ansible/mntlab-exam/deploy.yml'
+    sh 'cat /home/student/cm/ansible/mntlab-exam/application_tests.yml'
+    sh 'cat /home/student/cm/ansible/mntlab-exam/destroy.yml'
+    sh 'cat /home/student/cm/ansible/mntlab-exam/roles/deploy_war/files/deploy-info.txt'
+    sh 'cat /home/student/cm/ansible/mntlab-exam/ansible.cfg'
+
+    sh "echo build artefact"
+  }
+  stage("Build"){
+
+    git branch: "zvirinsky", url: 'git@git.epam.com:siarhei_beliakou/mntlab-exam.git'
+    sh 'echo "Developer Name: Zakhar Virinsky" > src/main/resources/build-info.txt'
+    sh 'echo "GIT URL: `git config --get remote.origin.url`" >> src/main/resources/build-info.txt'
+    sh 'echo "GIT Commit: `git rev-parse HEAD`" >> src/main/resources/build-info.txt'
+    sh 'echo "GIT Branch: `git rev-parse --abbrev-ref HEAD`" >> src/main/resources/build-info.txt'
+    sh 'echo `date` >> src/main/resources/build-info.txt'
+    /*sh 'cp docker-2/resources/initial/build/libs/gs-spring-boot-0.1.0.jar .'
+    archive('gs-spring-boot-0.1.0.jar')
+    */
+    sh 'mvn clean package -DbuildNumber=$BUILD_NUMBER'
+
+    sh "echo build artefact"
+  }
+
+  stage("Package"){
+
+    sh "tar -czvf mnt-exam-1.${BUILD_NUMBER}.tar.gz -C target/ mnt-exam.war"
+    archiveArtifacts "mnt-exam-1.${BUILD_NUMBER}.tar.gz"
+    sh "ls -la"
+
+    sh "echo package artefact"
+  }
+
+  stage("Roll out Dev VM"){
+
+    withEnv(["ANSIBLE_FORCE_COLOR=true", "PYTHONUNBUFFERED=1"])
+    { ansiColor('xterm') { sh "ansible-playbook createvm.yml -vv"}}
+
+  }
+
+  stage("Provision VM"){
+
+    withEnv(["ANSIBLE_FORCE_COLOR=true", "PYTHONUNBUFFERED=1"])
+    { ansiColor('xterm') {sh "ansible-playbook provisionvm.yml -vv"}}
+
+  }
+
+  stage("Deploy Artefact"){
+
+    withEnv(["ANSIBLE_FORCE_COLOR=true", "PYTHONUNBUFFERED=1"])
+    { ansiColor('xterm') { sh "ansible-playbook deploy.yml -e war=target/mnt-exam.war -vv"}}
+
+  }
+
+  stage("Test Artefact is deployed successfully"){
+    /*
+        use ansible to artefact on VM (Tomcat)
+        During the deployment you should create file: /var/lib/tomcat/webapps/deploy-info.txt
+        Put following details into this file:
+        - Deployment time
+        - Deploy User
+        - Deployment Job
+    */
+    withEnv(["ANSIBLE_FORCE_COLOR=true", "PYTHONUNBUFFERED=1"])
+    { ansiColor('xterm') { sh "ansible-playbook application_tests.yml -e war=mnt-exam -vv" }}
+
+  }
+
+
+  stage("destroy"){
+    withEnv(["ANSIBLE_FORCE_COLOR=true", "PYTHONUNBUFFERED=1"])
+    { ansiColor('xterm') { sh "ansible-playbook destroy.yml -vv" }}
+
+  }
+  stage("cleanup"){
+    step([$class: 'WsCleanup'])
+}
+
+
+
+
+}

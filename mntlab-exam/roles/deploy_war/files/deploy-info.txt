@@ -1,0 +1,3 @@
+Job Name: {{ job_name.stdout }}
+deployed at:{{ script_out.date }}
+deployed by:{{ script_out.username }}
